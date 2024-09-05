@@ -1,0 +1,5 @@
+site_name: bouzomgi
+nav:
+  - Home: index.md
+  - About: about.md
+  - Double Entry Bookkeeping: double-entry-bookkeeping.md
