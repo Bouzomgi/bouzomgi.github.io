@@ -1,0 +1,19 @@
+p.table-name {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+table {
+  max-width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px !important;
+  table-layout: fixed;
+}
+
+th,
+td {
+  border: 1px solid lightgray; /* Adds a border around each cell */
+}

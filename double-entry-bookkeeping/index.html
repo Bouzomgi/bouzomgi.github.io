@@ -17,6 +17,7 @@
         <link href="../css/base.css" rel="stylesheet">
         <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
         <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../style.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
         <script>hljs.highlightAll();</script> 
     </head>
@@ -97,7 +98,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#a-model-for-our-system" class="nav-link">A Model for our System</a>
+            <li class="nav-item" data-bs-level="2"><a href="#a-first-try-for-a-model" class="nav-link">A First Try for a Model</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -140,31 +141,19 @@
 </ol>
 <p>In all financial transactions, money or a monetary equivalent must originate from one place and end somewhere else!</p>
 <p>Let's review the previous scenarios and break them down!</p>
+<p><code>A company takes out a loan for $10k</code></p>
 <ul>
-<li>
-<p>A company takes out a loan for $10k</p>
-</li>
-<li>
-<p>Source: the bank (which has lent funds)</p>
-</li>
-<li>
-<p>Destination: the company's cash reserves</p>
-</li>
-<li>
-<p>A company purchases a tractor worth $2k using cash</p>
-</li>
-<li>
-<p>Source: the company's cash reserves</p>
-</li>
-<li>
-<p>Destination: The monetary value of the company's equipment</p>
-</li>
-<li>
-<p>A company takes its employees out for a $500 corporate dinner (paying with cash)</p>
-</li>
-<li>
-<p>Source: cash reserves</p>
-</li>
+<li>Source: the bank (which has lent funds)</li>
+<li>Destination: the company's cash reserves</li>
+</ul>
+<p><code>A company purchases a tractor worth $2k using cash</code></p>
+<ul>
+<li>Source: the company's cash reserves</li>
+<li>Destination: The monetary value of the company's equipment</li>
+</ul>
+<p><code>A company takes its employees out for a $500 corporate dinner (paying with cash)</code></p>
+<ul>
+<li>Source: cash reserves</li>
 <li>Destination: The restaurant</li>
 </ul>
 <p>When it comes to financial transactions, money is not created out of thin air or destroyed. Money can come from an outside source into the company (first example), be transformed from one form to another (second example), or it can be spent outside the company (third example).</p>
@@ -181,31 +170,19 @@
 </ul>
 <p>Let's quickly match the sources and destinations of the previous examples to these categories:</p>
 <p>A reminder: we are tracking these financial transactions as the company, not any other financial institution! Everything is viewed from the vantage point of the company.</p>
+<p><code>A company takes out a loan for $10k</code></p>
 <ul>
-<li>
-<p>A company takes out a loan for $10k</p>
-</li>
-<li>
-<p>Source: Liability! The company is taking on $10 worth of liability for this cash influx</p>
-</li>
-<li>
-<p>Destination: Asset. Cash reserves are considered an asset of the company</p>
-</li>
-<li>
-<p>A company purchases a tractor worth $2k using cash</p>
-</li>
-<li>
-<p>Source: Asset (explained from the previous example)</p>
-</li>
-<li>
-<p>Destination: Asset as well! Equipment is considered an asset of the company.</p>
-</li>
-<li>
-<p>A company takes its employees out for a corporate dinner (paying with cash)</p>
-</li>
-<li>
-<p>Source: Asset</p>
-</li>
+<li>Source: Liability! The company is taking on $10 worth of liability for this cash influx</li>
+<li>Destination: Asset. Cash reserves are considered an asset of the company</li>
+</ul>
+<p><code>A company purchases a tractor worth $2k using cash</code></p>
+<ul>
+<li>Source: Asset (explained from the previous example)</li>
+<li>Destination: Asset as well! Equipment is considered an asset of the company.</li>
+</ul>
+<p><code>A company takes its employees out for a corporate dinner (paying with cash)</code></p>
+<ul>
+<li>Source: Asset</li>
 <li>Destination: Expense. From the company's view, it doesn't matter that the money is going to any particular restaurant -- this expenditure is categorized simply as an expense.</li>
 </ul>
 <p>Although we can sub-categorize each source and destination with even more specificity, it is important to know that these 6 categories are the most primary.</p>
@@ -224,7 +201,7 @@
 <p>This equation makes sense intuitively. Equity is defined as what a company is worth. And at the end of the day, a company is in fact worth the monetary sum of all its assets (cash, property, land, etc) minus all of its liability (anything it owes to another party).</p>
 <p>And with a slight tweak, we can create an equivalent expression</p>
 <p><code>Assets = Equity + Liability</code></p>
-<p>This equation explains some of the behaviour we noticed in our previous section! Remember example 1 (<code>A company takes out a loan for $10k</code>)? Here, we noted that when liability rose, assets rose as well. Take a look, it matches what shows in the equation! An increase on the right side (liability) must match a rise in the left (assets) [^1].</p>
+<p>This equation explains some of the behaviour we noticed in our previous section! Remember example 1 (<code>A company takes out a loan for $10k</code>)? Here, we noted that when liability rose, assets rose as well. Take a look, it matches what shows in the equation! An increase on the right side (liability) must match a rise in the left (assets) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
 <p>It also matches up with example 2. <code>A company purchases a tractor worth $2k using cash</code>. Here, one asset account is decreased while another asset account is increased by the same amount. When we look at the equation, the right hand side is left constant. So the left hand side must be increased and decreased by identical values!</p>
 <p>Cool!</p>
 <p>But... what about the third example? We discussed how there are 6 categories that financial transactions' funds may be taken from or moved to, not 3!</p>
@@ -234,7 +211,7 @@
 <p>This equation is basis of modern double entry bookkeeping. A common pneumonic for remembering this formula is <code>DEALER</code>.</p>
 <p><strong>I don't know how this equation is generated from the previous -- this is something I am actively researching</strong></p>
 <p>Now that all categories are represented, we can understand the 3rd example. <code>A company takes its employees out for a corporate dinner (paying with cash)</code>. The company pays with cash (an asset), and it shrinks. The money is moved to an expense, which rises. Assets and expenses are on the same side of the equation, so the math matches the scenario.</p>
-<h2 id="a-model-for-our-system">A Model for our System</h2>
+<h2 id="a-first-try-for-a-model">A First Try for a Model</h2>
 <p>Now that we know what financial transactions are and the rules under how they operate, its time to revisit our original enquery: how can we track them? Let's propose a system:</p>
 <p>To log transactions, we will use tables. To keep as much information as possible, we can create a table per category of financial total we'd like to keep. And because we've learned that every financial transactions source or destination must belong to one of those 6 categories in <code>DEALER</code>, we can further label the table as such.</p>
 <p>We know that every financial transaction will have a source and a destination. To model this trait fully, we will add two entries in our tables per transaction -- one for the source, and the other for the destination. We know in some cases we need to add to the financial total that we are tracking, and other times we need to subtract. We COULD use positive and negative numbers directly, but (for reasons that will become clearer later) we will use two columns instead. If we put a value to one column (we will mark it with a +), it will represent an addition to the financial total of the table. If we put it in the other (marked with a -), it's considered subtraction.</p>
@@ -242,39 +219,120 @@
 <p>Enough description -- let's run through our examples and try to log them.</p>
 <p><code>A company takes out a loan for $10k</code></p>
 <p>We will start with the source: we know that this transaction involves a money movement from a liability to an asset. Again, we are considering the transaction from the perspective of the company. To model this liability, we can introduce a table called "Accounts Payable". Because we are introducing more liability to fund this transaction, we will log the transaction amount in the left column.</p>
-<p>Accounts Payable (Liability)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |</p>
+<p class="table-name">Accounts Payable (Liability)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>And now we need to record the destination. For this transaction we know cash reserves (an asset) are that destination. And we know our assets are going to rise.</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |</p>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>Looks good so far, let's keep going.</p>
 <p><code>The company purchases a tractor worth $2k using cash</code></p>
 <p>We already know cash (an asset) is the source, and equipment (another asset) is the destination. We will add another row to our cash table and create a new table for equipment. We will see a reduction in cash and an increase in equipment value.</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |
-| | 2,000 |</p>
-<p>Equipment (Asset)
-| (+) | (-) |
-| :---: | :-: |
-| 2,000 | |</p>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">2,000</td>
+</tr>
+</tbody>
+</table>
+<p class="table-name">Equipment (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2,000</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p><code>The company takes its employees out for a corporate dinner for $500 (paying with cash)</code></p>
 <p>Again, the source is cash (an asset) and the destination is an expense. The value associated with cash will shrink whilst expenses will rise.</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |
-| | 2,000 |
-| | 500 |</p>
-<p>Expenses
-| (+) | (-) |
-| :----: | :-: |
-| 500 | |</p>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">2,000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">500</td>
+</tr>
+</tbody>
+</table>
+<p class="table-name">Expenses</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>And that's our system. It works, but it could be a little better!</p>
 <h2 id="a-second-look">A Second Look</h2>
 <p>I've been really trying to stress the duality of financial transactions. Given the importance of this concept in understanding how they function, it's crucial that our modeling system clearly reflects this characteristic. Ideally, we'd like to be able to model every financial transaction with one entry in one column of one table, and a complementing entry in the right column of another. This way, every transaction will be added as a pair of source and destination.</p>
@@ -292,38 +350,119 @@
 <p>Let's roll with the examples:</p>
 <p><code>A company takes out a loan for $10k</code></p>
 <p>Here, the source is a liability, and the destination is an asset. The asset category is on the left of the equation, so its table remains the same. Liability, however, is on the right. This means we will use a table with flipped columns to represent it.</p>
-<p>Accounts Payable (Liability)
-| (-) | (+) |
-| :-: | :-: |
-| | 10,000 |</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |</p>
+<p class="table-name">Accounts Payable (Liability)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>-</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">10,000</td>
+</tr>
+</tbody>
+</table>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>Now we can represent this transaction with an entry in both a left and right column! It's working so far!</p>
 <p><code>The company purchases a tractor worth $2k using cash</code></p>
 <p>Both categories are assets, and because the asset category is on the left of the equals sign, the tables remain the same as in our previous system.</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |
-| | 2,000 |</p>
-<p>Equipment (Asset)
-| (+) | (-) |
-| :---: | :-: |
-| 2,000 | |</p>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">2,000</td>
+</tr>
+</tbody>
+</table>
+<p class="table-name">Equipment (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2,000</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p><code>The company takes its employees out for a corporate dinner for $500 (paying with cash)</code></p>
 <p>Same deal, both categories (assets and expenses) are on the left, so the tables remain the same.</p>
-<p>Cash (Asset)
-| (+) | (-) |
-| :----: | :-: |
-| 10,000 | |
-| | 2,000 |
-| | 500 |</p>
-<p>Expenses
-| (+) | (-) |
-| :----: | :-: |
-| 500 | |</p>
+<p class="table-name">Cash (Asset)</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">10,000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">2,000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">500</td>
+</tr>
+</tbody>
+</table>
+<p class="table-name">Expenses</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>+</strong></th>
+<th style="text-align: center;"><strong>-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>No matter the transaction, we can log it as 2 entries -- one in each column. And <em>this</em> is what we call modern double entry bookkeeping!</p>
 <h2 id="putting-a-name-to-the-action">Putting a Name to the Action</h2>
 <p>Our system is working how we'd like it to! Let's take one step back and observe three features about this new system:</p>
@@ -367,14 +506,20 @@ To lower the total -&gt; we credit a debit account OR debit a credit account</p>
 </table>
 <p>If you are lost, just remember, debiting = left column-ing and crediting = right column-ing. And because debit accounts and credit accounts use tables with positive and negative columns ordered in opposite ways, opposite columns work out to be the same operation!</p>
 <p>Let's go over the examples one final time and describe them using accounting terms:</p>
-<p><code>A company takes out a loan for $10k</code>
-I will credit "Accounts Receivable" (a liability) and debit "cash" (an asset)</p>
-<p><code>The company purchases a tractor worth $2k using cash</code>
-I will credit "cash" (an asset) and debit "equipment" (an asset)</p>
-<p><code>The company takes its employees out for a corporate dinner for $500 (paying with cash)</code>
-I will credit "cash" (an asset) and debit "expense" (an expense)</p>
+<p><code>A company takes out a loan for $10k</code></p>
+<ul>
+<li>I will credit "Accounts Receivable" (a liability) and debit "cash" (an asset)</li>
+</ul>
+<p><code>The company purchases a tractor worth $2k using cash</code></p>
+<ul>
+<li>I will credit "cash" (an asset) and debit "equipment" (an asset)</li>
+</ul>
+<p><code>The company takes its employees out for a corporate dinner for $500 (paying with cash)</code></p>
+<ul>
+<li>I will credit "cash" (an asset) and debit "expense" (an expense)</li>
+</ul>
 <p>And now we are talking like accountants!</p>
-<p>I'll leave you with one more cool observation: remember earlier how I said money cannot be created nor destroyed? Check it out in the context of double entry bookkeeping! If all financial transactions are properly recorded, the total number of left column entries will always equal the total number of right column entries. This means that after every transaction, we can tally up the number of all left entries and all right entries. If they are equal, we know we have correctly modeled our finances (and no money has mysteriously appeared or disappeared) [2].</p>
+<p>I'll leave you with one more cool observation: remember earlier how I said money cannot be created nor destroyed? Check it out in the context of double entry bookkeeping! If all financial transactions are properly recorded, the total number of left column entries will always equal the total number of right column entries. This means that after every transaction, we can tally up the number of all left entries and all right entries. If they are equal, we know we have correctly modeled our finances (and no money has mysteriously appeared or disappeared) <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
 <h2 id="clearing-some-misconceptions">Clearing Some Misconceptions</h2>
 <p>I've read this in many articles and heard this in many videos, and I think it is important to stress to any readers here as well: <em>the terms debit and credit should not carry any moral weight</em>. You might feel inclined to link the term "crediting" to "credit cards", and may view the borrowing they involve as being negative. Remember:</p>
 <ul>
@@ -389,9 +534,17 @@ I will credit "cash" (an asset) and debit "expense" (an expense)</p>
 </li>
 </ul>
 <p>Debiting and crediting are not "good" nor "bad". They are simply terms that describe money movement.</p>
+<div class="footnote">
 <hr />
-<p>[^1]: Or, of course, the rise in liability could be matched with a decrease in equity.
-[^2]: Yes, if you accidentally create a one-sided entry in one column of one table and a non-related, second one-sided entry in the opposite column (in the same table or another), the tallies of values in each column will be equal and this validation will not work.</p></div>
+<ol>
+<li id="fn:1">
+<p>Or, of course, the rise in liability could be matched with a decrease in equity.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Yes, if you accidentally create a one-sided entry in one column of one table and a non-related, second one-sided entry in the opposite column (in the same table or another), the tallies of values in each column will be equal and this validation will not work.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
             </div>
         </div>
 
