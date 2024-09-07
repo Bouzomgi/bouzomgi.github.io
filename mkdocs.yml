@@ -1,9 +1,11 @@
 site_name: bouzomgi
 nav:
-  - Home: index.md
   - About: about.md
+  - Tech:
+      - Password Security: tech/password-security.md
+      - JWTs: tech/jwt.md
   - Money:
-      - Double Entry Bookkeeping: double-entry-bookkeeping.md
+      - Double Entry Bookkeeping: money/double-entry-bookkeeping.md
 markdown_extensions:
   - footnotes
 extra_css:

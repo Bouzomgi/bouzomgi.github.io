@@ -1,17 +1,12 @@
-# Welcome to MkDocs
+# Home
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+A collection of posts and projects on topics that interest me
 
-## Commands
+## Technology
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+- [Encryption Tools](/password-security)
+- [JSON Web Tokens](/jwts)
 
-## Project layout
+## Money
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- [Double Entry Bookkeeping](/double-entry-bookkeeping)
