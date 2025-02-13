@@ -1,0 +1,36 @@
+div.full-page {
+  margin-top: 8vh;
+  padding-bottom: 5vh;
+  width: 60%;
+
+  p {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  ul {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    max-width: 100%; /* Ensures the UL stays within its container */
+    padding-left: 20px; /* Adds space for the bullets */
+    overflow-wrap: break-word; /* Makes sure text in list items wraps */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+
+  hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: none;
+    height: 1px;
+    background-color: gray;
+  }
+}

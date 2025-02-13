@@ -1,0 +1,40 @@
+div.narrow-page {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10vh;
+  padding-bottom: 10vh;
+
+  .title {
+    font-size: x-large;
+    text-align: center;
+    width: fit-content;
+    max-width: 25vw;
+  }
+
+  .body {
+    font-size: large;
+    width: fit-content;
+    max-width: 50vw;
+  }
+
+  .authorNote {
+    border-top: 0.5px solid lightslategray;
+    margin-top: 30px;
+    padding-top: 7px;
+    font-size: x-small;
+  }
+
+  .image {
+    padding-top: 30px;
+    width: 20vw;
+    height: auto;
+  }
+
+  .limits * {
+    text-align: center;
+    align-items: center;
+  }
+}

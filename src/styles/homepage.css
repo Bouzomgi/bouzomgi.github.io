@@ -1,0 +1,45 @@
+div.home-page {
+  width: 35vw;
+  margin: auto;
+
+  a {
+    display: block;
+    font-size: xxx-large;
+    opacity: 0; /* Start invisible */
+    animation-duration: 0.25s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  a:nth-child(odd) {
+    animation-name: slideInFromRight;
+    text-align: left;
+  }
+
+  a:nth-child(even) {
+    animation-name: slideInFromLeft;
+    text-align: right;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%); /* Start off-screen on the left */
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0); /* End in the normal position */
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%); /* Start off-screen on the right */
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0); /* End in the normal position */
+    opacity: 1;
+  }
+}

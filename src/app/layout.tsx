@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Rubik_Mono_One, JetBrains_Mono } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import "@styles/globals.css";
+
+const jetbrains = JetBrains_Mono({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const rubikMonoOne = Rubik_Mono_One({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-rubik-mono-one",
 });
 
 export const metadata: Metadata = {
@@ -23,10 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${jetbrains.variable} ${rubikMonoOne.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,0 +1,174 @@
+import "@styles/service.css";
+
+export default function Page() {
+  const title = "Rauschenbusch Metro Ministries";
+
+  const projectDescription = `"Assemble and Prepare Food in Hell’s Kitchen"`;
+
+  const background1 = `Two blocks from Port Authority stands Metro Baptist Church, an unassuming place of worship that blends into the cityscape. But on the first and third Saturdays of each month, a line wraps around the building as people wait for its food pantry distribution.
+  
+The church is home to Rauschenbusch Metro Ministries (RMM), a secular nonprofit founded in 1995 to address the urgent needs of Hell’s Kitchen’s most vulnerable residents. RMM provides a range of services, including:`;
+
+  const service1 = `Winter Clothing Closet, which facilitates the distribution of new and lightly used coats during the winter months, along with other essential clothing items`;
+  const service2 = `Living Well empowerment program, a multi-week support group helping women heal from trauma related to domestic abuse and homelessness`;
+  const service3 = `Homecoming, a similar program for veterans who have experienced homelessness`;
+  const service4 = `Hell’s Kitchen Food Project, a volunteer-run rooftop farm at Metro Baptist Church that grows fresh vegetables and herbs for food-insecure New Yorkers, addressing community nutrition needs.`;
+  const service5 = `Food Pantry, operated with volunteers from New York Cares to provide groceries to those in need.`;
+
+  const background2 = `RMM’s food pantry primarily serves Hell’s Kitchen’s food-insecure population, though its target demographic is not necessarily the homeless. The pantry distributes shelf-stable items intended for cooking, such as canned goods, raw grains like rice and pasta, and fresh vegetables.
+
+Well-regarded in the community, RMM’s food pantry sees many regular clients returning each month. Attendance requires an online appointment, but walk-ins are accepted between 11:00 and 11:30 for those unable to register in advance. The pantry’s mission extends beyond individual clients to their entire families. To receive food, clients must provide identification, along with proof of residence for any dependents they claim. The amount of food distributed scales with household size, ensuring adequate support for larger families.
+
+Clients arrive at the church at their scheduled pickup time. As their appointment approaches, they are directed into the service building’s main room before being guided in a line downstairs to the distribution area.
+
+At the pantry, each client receives a card indicating the number of dependents they have claimed. This determines the amount of food they receive. The card also includes a breakdown of how many items the client can select from each distribution station measured in "points." Most items are worth a single point, though larger pre-packaged items may count as multiple points, while smaller items may be bundled together for one. This system ensures a fair distribution while allowing clients some flexibility in their selections.`;
+
+  const experience = `Volunteers arrive at the church at 8:30 a.m., where a line of waiting clients already snakes around the back. Inside, they ascend a short staircase to two rooms—one for storing coats and personal items, and another with a table of name tags for volunteers to label themselves. Afterward, they wait in the main worship hall, just outside the rooms, where chairs are arranged. At 8:45, the team leader ushers them downstairs to begin preparing food for distribution.
+
+The food pantry occupies the lower level, with tables lining the walls, already filled with canned goods. Volunteers start by preparing the day’s fresh food. Wearing gloves, they individually bag these items before transferring them into large boxes around the distribution tables. Once everything is set, roles are assigned.
+
+To ensure the project runs smoothly, the team leader strategically distributes volunteers based on experience. The group is divided into "vets", those familiar with the pantry, and "newbies”, those who aren’t. Each team is balanced with a mix of both, ensuring that new volunteers receive guidance while experienced ones help maintain a smooth workflow.`;
+
+  const tasks = `One volunteer is selected to hand out a card to each client as they enter the pantry.
+
+A group of volunteers is assigned to assist clients with their cards, helping them up and down the stairs to and from the pantry. The task of assisting clients upstairs is notably more challenging than guiding them downstairs. Ascending is more physically demanding, and those helping clients carry carts up must manage not only the weight of the cart but also the contents, the pantry items selected by the clients. This is a particularly difficult task, typically taken by young men who don’t mind the physical labor.
+
+Another volunteer is assigned the task of greeting clients in the main distribution room. This volunteer also ensures that each client receives reusable bags to hold their pantry items, in case the client has not brought their own.
+
+A couple of volunteers serve as runners. These individuals circulate around the pantry, collecting empty boxes from tables that have finished distributing their contents. Pantry items are stored either in a closet off the main distribution room (primarily for grains) or in a stone-lined back room affectionately titled "the dungeon". Runners are responsible for replenishing any low or depleted items from these storage areas. During downtime, runners break down empty cardboard boxes, bundle them into stacks, and set them aside for recycling.
+
+The remaining volunteers, minus one, are assigned to the six distribution tables at the RMM food pantry: dairy, fruit, vegetables, grains, protein, and fresh produce. Each table is staffed by 2-3 volunteers, with the fresh produce table taking the remaining volunteers.
+
+Each distribution table is stocked underneath with many boxes of food. Volunteers are responsible for ensuring that at least one of each item is displayed on the table for clients to see. When a client approaches a table, the volunteer greets them and asks for their card. The volunteer then locates the number next to the station name to determine how many items the client can select from the table. The client then gestures to each item they’d like to take and indicates how many they would like. Volunteers fulfill these requests from the stockpile below.
+
+Once a client has exhausted all of their allotted points at a particular table, they are no longer permitted to take additional items and must move on to the next station. Occasionally, clients use up all their points too quickly before seeing all the items available at the table. In such cases, volunteers can take back items the client no longer wants and replace them with others, ensuring the client’s satisfaction.
+
+The final volunteer, acting as a “traffic cop,” is stationed between the vegetables and grains tables. This person halts clients from moving between the two tables until the grains table is clear of a client, helping to reduce congestion and maintain a smooth flow at the latter tables.`;
+
+  const offering1 = `Dairy: 2% milk and almond milk`;
+  const offering2 = `Fruit: Canned fruit such as peaches, pears, fruit cocktail, and mandarin oranges. Occasionally, the pantry also offers plastic fruit cups`;
+  const offering3 = `Vegetables: Canned vegetables like carrots, collard greens, peas, green beans, and mixed vegetables. Jars of sofrito are sometimes available as well`;
+  const offering4 = `Grains: Boxed cereal, pasta, and mac & cheese, as well as bags of white and brown rice, potato flakes (for mashed potatoes), couscous, and similar items`;
+  const offering5 = `Protein: Tinned salmon, tuna, and sardines, along with bags of dry beans (black, pinto, and chickpeas). The pantry may also have bags of pre-cooked and pre-seasoned taco beef, bags of walnuts, almonds, etc. A fresh “main” protein offering, typically set at 2 or more points, is also available. These may include small chickens, cuts of meat, bags of prawns or calamari. Usually these items are limited, and the pantry keeps a single “main” option out until it is exhausted, at which point it is replaced with another.`;
+  const offering6 = `Fresh items: this station is actually a combination of multiple tables. Fresh vegetables and breads are distributed here. Common items include cabbages, lettuce, potatoes, carrots, herbs from RMM’s rooftop garden, and baguettes. Volunteers also distribute miscellaneous items that do not belong in any of the aforementioned categories, such as boxes of cake mix or donated pre-made, ready-to-eat items like sandwiches or baked goods from local businesses. This table is the only one that does not accept points – instead, clients are typically allowed to take one of each item no matter their card. `;
+
+  const offeringSummary = `Although many items are consistent from week to week, there are often unique offerings each time.
+
+  Once all clients have been served, volunteers assist in moving all open and unopened boxes of product to rolling carts, to be stored either in the grain closet or in “the dungeon”. The tables are disassembled and stacked in the corner, and any remaining boxes are broken down. Finally, volunteers are thanked for their help and dismissed.`;
+
+  const challenges = `Sometimes volunteers encounter certain difficulties whilst performing their roles`;
+
+  const languageBarriers = `RMM’s food pantry serves all who need it, regardless of their background, and New York City’s diversity is reflected in the clients who visit. Many clients speak languages other than English, with Spanish and Chinese (Mandarin or Cantonese) being the most common. In many cases, volunteers can navigate communication barriers through simple gestures, pointing, and using fingers to count points. Smiling and showing patience also go a long way. Most pantry items are in clear packages, or the labels feature images that help clients identify the contents, even if they cannot read the labels. However, some items, like farina or potato flakes for mashed potatoes, may not be as easily recognizable. In these situations, volunteers can turn to tools like Google Translate.
+
+Often, groups of clients who speak the same language will arrive together, and they may assist each other in translating or communicating with the volunteer if one of them understands English.
+
+Given the number of non-English speaking clients, Spanish and Chinese-speaking volunteers are highly valued. These volunteers are typically assigned to one table each, with special emphasis placed on the protein table, which has been found to cause the most confusion due to language differences.`;
+
+  const selectiveness = `Some clients can be quite selective, particularly at the fresh food table. While there is nothing inherently wrong with this, it can slow down the line significantly, especially given RMM’s mission to serve as many clients as possible. Clients tend to select on rather arbitrary criteria – volunteers never serve food that they wouldn’t eat themselves. At times, clients may also attempt to physically root around in the produce boxes themselves, which is discouraged, as they are not wearing gloves.
+
+To maintain efficiency and keep the line moving at a reasonable pace, volunteers are instructed to keep boxes of food out of sight and out of reach of the clients. Clients are only given the items that are offered to them.
+
+Additionally, the traffic expediter between the grains and protein tables helps reduce congestion, as clients often slow down to examine protein items more carefully. This system allows volunteers to focus on one client at a time, ensuring that the correct number of points are used and that the process remains efficient.`;
+
+  const itemPopularity = `Some items offered by the pantry are in higher demand than others. Sofrito is particularly favored by the Hispanic community, the Asian community often requests large quantities of nuts, and tinned salmon is a popular choice overall. To ensure these items can be distributed to as many clients as possible, RMM imposes per-person limits on their availability.`;
+
+  const myTake1 = `I’ve found the food pantry at Rauschenbusch Metro Ministries to be a particularly fantastic project for two things`;
+
+  const meetingNewPeople = `RMM is alloted a lot of volunteers by New York Cares. Especially at the start of the project when everyone is preparing the fresh food in bags, because everyone is in the same room you really notice how many people are with you. If your goal is to make friends or talk to someone new, it is very easy to slide up next to someone as they are bagging and strike up a conversation.
+
+Once volunteers are assigned a table, they no longer have access to the rest of the group, but they gain an amazing opportunity to get to know their teammates. Since you’re standing and working together for the entire project, you really have the chance to connect. I’ve made friends this way—some of whom I’ve gone on to see at future projects—while also getting to know people I might never have met otherwise.`;
+
+  const beautifulInteractions1 = `At RMM, if you are assigned a table, chances are the role will look like the following:`;
+
+  const interaction1 = `greet the client`;
+  const interaction2 = `ask for their card`;
+  const interaction3 = `fulfill their request`;
+  const interaction4 = `wish them well as they move to the next`;
+
+  const beautifulInteractions2 = `The entire interaction is pleasant. At every step, there’s an opportunity to inject kindness and care. Clients are often grateful when receiving an item, and reflecting that gratitude back to them is, to me, the embodiment of true human connection. Because each interaction is so brief, it’s easy to give each person undivided attention and care from the moment they arrive at your station to the moment they leave.
+
+Of course, not every client is equally receptive – some avoid eye contact, some won’t return smiles, and a few can be aggressive or argumentative. But overwhelmingly, clients facilitate these positive interactions that foster an overwhelming sense of camaraderie and shared humanity. It is such a pleasure to receive a returned smile or a heartfelt “thank you.” 
+
+I love wishing our Hispanic clients a good day in Spanish and hearing an “igualmente” in return. I love seeing familiar faces week after week, getting to know their dietary preferences, and imagining the meals they’ll create with their selections.
+
+There’s the Slavic woman who regularly comes with her elderly mother. The woman who once shared her Polish cabbage recipe with me. The mother and her long-haired young son. The masked and gloved woman with a powerful quiet and gentle presence whom I’ve encountered at other projects. The elderly man and his friend from across the street, whom I once had the opportunity of helping carry his groceries directly into his kitchen.
+
+Just as meaningful is the community of returning volunteers. Many come back week after week, and I’ve had the privilege of getting to know them by name. I look forward to seeing them each time I’m able to sign up at RMM.`;
+
+  const myTake2 = `
+I’m a big fan of RMM. 
+
+I give this opportunity a mega RECOMMEND!`;
+
+  return (
+    <div className="main">
+      <div className="page full-page">
+        <div className="title-block">
+          <h1>{title}</h1>
+          <p>{projectDescription}</p>
+        </div>
+
+        <h2>Background</h2>
+        <p>{background1}</p>
+        <ul>
+          <li>{service1}</li>
+          <li>{service2}</li>
+          <li>{service3}</li>
+          <li>{service4}</li>
+          <li>{service5}</li>
+        </ul>
+        <p>{background2}</p>
+
+        <h2>Experience</h2>
+        <p>{experience}</p>
+
+        <h3>Volunteer Roles</h3>
+        <p>{tasks}</p>
+
+        <h3>Table Offerings</h3>
+        <ul>
+          <li>{offering1}</li>
+          <li>{offering2}</li>
+          <li>{offering3}</li>
+          <li>{offering4}</li>
+          <li>{offering5}</li>
+          <li>{offering6}</li>
+        </ul>
+        <p>{offeringSummary}</p>
+
+        <h3>Challenges</h3>
+        <p>{challenges}</p>
+
+        <h4>Language Barriers</h4>
+        <p>{languageBarriers}</p>
+
+        <h4>Selectiveness</h4>
+        <p>{selectiveness}</p>
+
+        <h4>Item Popularity</h4>
+        <p>{itemPopularity}</p>
+
+        <hr />
+
+        <h2>My Take</h2>
+        <p>{myTake1}</p>
+
+        <h3>Meeting New People</h3>
+        <p>{meetingNewPeople}</p>
+
+        <h3>Beautiful Interactions</h3>
+        <p>{beautifulInteractions1}</p>
+
+        <ul>
+          <li>{interaction1}</li>
+          <li>{interaction2}</li>
+          <li>{interaction3}</li>
+          <li>{interaction4}</li>
+        </ul>
+
+        <p>{beautifulInteractions2}</p>
+        <p>{myTake2}</p>
+      </div>
+    </div>
+  );
+}
