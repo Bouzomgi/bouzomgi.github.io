@@ -1,4 +1,4 @@
-import Linker from "../ui/Linker";
+import Linker from "@ui/Linker";
 
 const opportunityTitles = [
   "St John the Divine",

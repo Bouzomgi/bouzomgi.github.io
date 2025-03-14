@@ -1,4 +1,4 @@
-import "@styles/page.css";
+import "@styles/narrowPage.css";
 
 type PageProps = {
   title?: string;
@@ -10,14 +10,14 @@ type PageProps = {
 export default function Page({ title, content, authorNote, image }: PageProps) {
   return (
     <div className="main">
-      <div className="page narrow-page">
+      <div className="page narrowPage">
         {title && <h1 className="title">{title}</h1>}
 
         <pre>{content}</pre>
 
         {image && <img src={image} alt={`Image for ${title}`} />}
 
-        {authorNote && <aside>{authorNote}</aside>}
+        {authorNote && <aside className="authorNote">{authorNote}</aside>}
       </div>
     </div>
   );

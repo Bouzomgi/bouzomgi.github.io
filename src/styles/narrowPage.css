@@ -1,4 +1,4 @@
-div.narrow-page {
+div.narrowPage {
   display: flex;
   flex-direction: column;
   width: fit-content;
@@ -10,8 +10,10 @@ div.narrow-page {
   .title {
     font-size: x-large;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
     width: fit-content;
-    max-width: 25vw;
+    max-width: 31vw;
   }
 
   .body {
@@ -25,12 +27,16 @@ div.narrow-page {
     margin-top: 30px;
     padding-top: 7px;
     font-size: x-small;
+    width: 92%;
   }
 
-  .image {
+  img {
     padding-top: 30px;
     width: 20vw;
     height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .limits * {

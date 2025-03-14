@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import type { Configuration, RuleSetRule } from "webpack";
 import path from "path";
+import createMDX from "@next/mdx";
 
 interface OneOfRule {
   issuer?: {
@@ -8,6 +9,7 @@ interface OneOfRule {
   };
 }
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   webpack(config: Configuration) {
@@ -32,4 +34,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+});
+
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig);

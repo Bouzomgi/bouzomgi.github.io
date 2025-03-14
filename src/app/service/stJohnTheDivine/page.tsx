@@ -1,4 +1,4 @@
-import "@styles/service.css";
+import "@styles/fullPage.css";
 
 export default function Page() {
   const title = "St John the Divine";
@@ -45,11 +45,9 @@ I give this opportunity a mega RECOMMEND!`;
 
   return (
     <div className="main">
-      <div className="page full-page">
-        <div className="title-block">
-          <h1>{title}</h1>
-          <p>{projectDescription}</p>
-        </div>
+      <div className="page fullPage">
+        <h1>{title}</h1>
+        <p>{projectDescription}</p>
 
         <h2>Background</h2>
         <p>{background}</p>

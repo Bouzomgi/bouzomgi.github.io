@@ -21,9 +21,17 @@
     "paths": {
       "@/*": ["./src/*"],
       "@styles/*": ["./src/styles/*"],
-      "@markdown/*": ["./src/markdown/*"]
+      "@markdown/*": ["./src/markdown/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@ui/*": ["./src/app/ui/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/tech/passwordSecurity/page.mdx"
+  ],
   "exclude": ["node_modules"]
 }

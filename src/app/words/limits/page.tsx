@@ -1,5 +1,5 @@
 import Page from "../../ui/Page";
-import "@styles/page.css";
+import "@styles/narrowPage.css";
 
 const title = "Limits";
 

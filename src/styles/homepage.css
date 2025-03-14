@@ -4,8 +4,9 @@ div.home-page {
 
   a {
     display: block;
+    width: max-content;
     font-size: xxx-large;
-    opacity: 0; /* Start invisible */
+    opacity: 0;
     animation-duration: 0.25s;
     animation-timing-function: ease-out;
     animation-fill-mode: forwards;
