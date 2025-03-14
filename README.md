@@ -13,14 +13,3 @@ pnpm dev
 # or
 bun dev
 ```
-
-## IDEAS
-
-- merits of volunteer work. Who actually benefits. What I've gotten from it.
-
-# For Release
-
-- Add at least one more volunteer article (Thurgood Marshall or Coalition)
-- Revisit pale ridges
-- Add chatter article
-- I don't like how on bouz it scrolls

@@ -11,6 +11,7 @@ interface OneOfRule {
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
+  output: "export",
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   webpack(config: Configuration) {
     config.module?.rules
