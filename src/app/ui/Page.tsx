@@ -11,13 +11,14 @@ export default function Page({ title, content, authorNote, image }: PageProps) {
   return (
     <div className="main">
       <div className="page narrowPage">
-        {title && <h1 className="title">{title}</h1>}
+        <div className="piece">
+          {title && <h1 className="title">{title}</h1>}
 
-        <pre>{content}</pre>
+          <pre className="content">{content}</pre>
 
+          {authorNote && <aside className="authorNote">{authorNote}</aside>}
+        </div>
         {image && <img src={image} alt={`Image for ${title}`} />}
-
-        {authorNote && <aside className="authorNote">{authorNote}</aside>}
       </div>
     </div>
   );

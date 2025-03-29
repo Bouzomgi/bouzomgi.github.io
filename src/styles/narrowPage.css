@@ -1,22 +1,24 @@
 div.narrowPage {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
   margin-top: 10vh;
   padding-bottom: 10vh;
+  display: flex;
+  flex-direction: row;
+
+  .piece {
+    width: fit-content;
+    margin-left: 10vw;
+    margin-right: auto;
+  }
 
   .title {
     font-size: x-large;
-    text-align: center;
-    margin-left: auto;
     margin-right: auto;
     width: fit-content;
-    max-width: 31vw;
+    max-width: 50vw;
   }
 
-  .body {
+  .content {
     font-size: large;
     width: fit-content;
     max-width: 50vw;
@@ -31,16 +33,25 @@ div.narrowPage {
   }
 
   img {
-    padding-top: 30px;
+    padding-top: 15px;
     width: 20vw;
     height: auto;
     display: block;
     margin-left: auto;
     margin-right: auto;
   }
+}
 
-  .limits * {
-    text-align: center;
-    align-items: center;
+.limits .piece {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+
+  .title {
+    margin-left: auto;
+    margin-right: auto;
   }
 }

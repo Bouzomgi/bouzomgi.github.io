@@ -1,0 +1,305 @@
+# Blue Green Deployments
+
+## Problem Statement
+
+I have a web server deployed on hardware I own. I want to replace it with a new version at will, without downtime. Before making the switch, I need to validate that the new version runs correctly on my hardware and doesn't introduce regressions.
+
+<br />
+My CI/CD pipeline runs on a remote server, and I want to trigger deployments over
+the internet rather than setting up a VPN. Similarly, I want my regression tests
+to run over the internet to simulate real-world traffic as closely as possible.
+
+<br />
+In many blue-green deployment setups, the previous version (blue) is kept around
+in case a rollback is needed. To keep things simple, I plan to eliminate the old
+version as soon as traffic has been switched.
+
+<br />
+How can I do something like this? Well, I can implement a custom [blue green deployment
+strategy](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment).
+
+## What is a Blue Green Deployment?
+
+In this deployment strategy, there are always two environments: blue and green. The blue server serves as the production environment, handling all live traffic.
+
+<br />
+When deploying a new version, we spin up a separate green server. Once up, we can
+run whatever tests we'd like against this application to ensure it is stable and
+regression-free before exposing it to production traffic.
+
+<br />
+Once we're confident the green server is working properly, we switch production traffic
+to it. Green becomes the new blue, and the previous blue server is torn down.
+
+## Blue-Green and Me
+
+I want to implement a blue-green deployment strategy tailored to my application's needs.
+
+<br />
+In addition to my previous deployment needs, I have another limitation -- I don't
+want to open port 22 to the internet on the hardware running my servers for security
+reasons. To keep things simple, I prefer all communication (deployment, testing,
+and production traffic) to happen over a single port, most likely 80/443. This means
+I need a single entry point that can either handle all the deployment logic or route
+requests to other services running on my hardware.
+
+<br />
+Here's how my CI/CD workflow will look:
+
+- publish a new version of my application to a Docker repository
+- trigger a new green environment using the new image
+- run regression tests against green
+  - if the tests pass, switch production traffic to green and remove the old blue
+  - if the tests fail, destroy green
+
+### Routes
+
+Since all communication (deployment, testing, and production traffic) will flow through a single port, there will need to be specialized routes to break up the traffic to their corresponding work streams:
+
+- `/deployment`
+  - `/deployment/deployGreen` → stands up a new green
+  - `/deployment/switchTraffic` → points production traffic to green and remove the old blue deployment
+  - `/deployment/deployGreen` → removes the current green
+- `/test`
+  - routes all requests with this prefix to green
+- `/`
+  - routes all other requests to blue (production)
+
+## Architecture
+
+### Containerization
+
+Since I want the flexibility to deploy my backend web server anywhere, containerization is the clear choice. In the context of blue-green deployments, running both blue and green as separate Docker containers ensures clean isolation between the two versions.
+
+<br />
+And to keep things consistent, I also plan to containerize any additional services
+needed for my deployment strategy. Everything will be managed with a simple docker-compose
+file, making it easy to spin up the entire setup.
+
+### A Traffic Controller
+
+With two isolated servers (blue and green) running simultaneously, and a single entry point for external traffic, we will need something of a "traffic controller" to route requests between the two servers.
+
+<br />
+Nginx fits this role well -- it is a powerful reverse proxy that can direct traffic
+based on URL path, which aligns perfectly with our needs.
+
+<br />
+Our architecture at this point will look something like this, where each box is a
+separate docker container:
+
+<img src="/blueGreen/architecture1.png" />
+
+### Wrangling Nginx
+
+There is an issue though. Nginx is configured using an `nginx.conf` file, which looks something like this:
+
+<img src="/blueGreen/nginxConf.png" />
+
+As you can see in this example config, a developer can program nginx to route traffic based on a specific path to a particular location.
+
+<br />
+However, in this scenario, the routing (and thus the `nginx.conf` file) will need
+to change dynamically:
+
+- When we spin up a green environment, we want requests starting with `/test` to be routed to it. And when green goes down, this `/test` routing shouldn't happen anymore.
+- When we want to switch traffic, we need to point requests against `/` to the green backend server, which requires us to modify the proxy pass URL to green
+
+<br />
+The problem is that Nginx doesn’t provide a built-in way to execute scripts directly
+to modify the `nginx.conf` file. So, how do we handle this?
+
+<br />
+What we can do is create and spin up a separate server that can take care of dynamically
+modifying the `nginx.conf` file as needed. This server will handle all the necessary
+changes when switching environments or adjusting routes. I'll call this service our
+"deployment server".
+
+### Deployment Server
+
+The deployment server will handle requests for the following endpoints:
+
+- `/deployment/deployGreen`
+- `/deployment/switchTraffic`
+- `/deployment/destroyGreen`
+
+<br />
+When the deployment server receives these requests, it will take the necessary actions,
+such as:
+
+- Programmatically updating the `nginx.conf` file to route traffic appropriately.
+- Creating new containers for the green environment.
+- Removing containers for the old environment (blue or green, as necessary).
+
+This server acts as the control center for managing the lifecycle of our deployment, ensuring that the Nginx configuration stays in sync with the environment changes.
+
+#### Where Shall It Go?
+
+Where should I run this deployment server? Remember, both the nginx traffic controller and the deployment server need to be able to edit the `nginx.conf` file.
+
+<br />
+So, the simplest approach is to just keep them in the same container. That way, they
+both have immediate access to the configuration file. We can use a tool like Supervisor
+to manage both the Nginx server and the deployment server, running them on different
+ports.
+
+<br />
+However, this approach introduces a challenge: Nginx, by default, runs as a user
+with minimal privileges to enhance security. This is important, as Nginx is the entry
+point to the application and could be a target for attacks. Running both services
+in the same container would require granting the web server additional permissions
+to read, write, and execute files, which compromises Nginx’s default security model.
+
+<br />
+The webserver itself will need additional access to read, write, and execute files.
+So, to run both servers on the same container, we would need to grant expanded permissions
+to that container.
+
+<br />I don't wanna do this.
+
+##### How Can We Fix This?
+
+Instead, we can keep them as separate containers and connect them using a Docker volume to store the `nginx.conf` file. This way, both services remain isolated and can run under separate users, while still having access to the `nginx.conf`.
+
+<br />
+Now, our architecture is looking like this:
+
+<img src="/blueGreen/architecture2.png" />
+
+## Implementation
+
+From here, we can begin building out the application. I've chosen to write my web servers in JavaScript.
+
+### Naming our Containers
+
+We can't actually name our containers blue or green in Docker. The issue is we can't rename the container once it is running, so to give our containers these names, we would need to tear both blue and green down at the same time, rename, and restart, which obviously would not permit for downtime-less deployment (the entire point of this blue green deployment strategy).
+
+<br />
+Instead, we can use the names "alpha" and "omega" for my backend containers. Alpha
+or omega can represent either blue or green -- the way we can know which is blue
+and which is green is by checking where production traffic is routed. If production
+traffic is going to alpha, alpha is blue. Likewise for omega. And green of course
+will be the opposite container.
+
+## What's our Blue?
+
+How do we programmatically "remember" which environment the traffic controller currently considers blue?
+
+<br />
+At first, I considered using an environment variable named `BLUE_ENV`, setting its
+value to either ALPHA or OMEGA, and injecting it somehow into the `nginx.conf`. This
+would make it easy to reference the current blue container name throughout the application.
+
+<br />
+However, this approach felt a bit messy. I was concerned that:
+
+- the env var and the `nginx.conf` could fall out of sync
+- the env var would be wiped if the container restarted
+- there would be no clear single source of truth
+
+Instead, I scrapped the env var approach and decided to treat the `nginx.conf` as the single source of truth. I can simply parse the `nginx.conf` to determine which container is currently blue.
+
+<br />
+To make this easier, I added a #blue comment next to the blue environment block in
+the `nginx.conf`, allowing my parsing script to quickly identify the active blue
+server.
+
+<img src="/blueGreen/nginxConfBlue.png" />
+
+### Writing the Routes
+
+How will we implement our routes? Let’s start with `/deployment/deployGreen`.
+
+<br />
+If blue is currently pointing to alpha, we’ll need to stand up omega as green and
+add a block in the `nginx.conf` that routes `/test` traffic to omega.
+
+<br />
+We need to create an `nginx.conf` that looks something like this:
+
+<img src="/blueGreen/nginxConfTestRoute.png" />
+
+Now, how do we edit the `nginx.conf`? One option is to
+
+- parse for the current blue
+- use it to determine the green (if blue is alpha, green is omega, and vice versa)
+- and use something like sed to
+  - find the `location /` block
+  - insert in a `location /test` block right, pointing to the green environment
+
+But I don’t like this approach.
+
+<br />
+Relying on sed for direct manipulation makes the configuration scripts tightly coupled
+to the `nginx.conf` structure. If we later modify the config format, we’d need to
+rewrite the scripts, which could lead to a lot of headache.
+
+<br />
+Instead, I opted for a template-based approach to generate the `nginx.conf`.
+
+<br />
+Using Jinja2 and Ansible, I created a template that accepts two arguments:
+
+1. the current blue environment (alpha or omega)
+2. whether or not to enable the `/test` route for green
+
+I can then generates a new `nginx.conf`, ensuring a consistent and predictable format every time.
+
+<br />
+Here's what the template looks like:
+
+<img src="/blueGreen/nginxConfTemplate.png" />
+
+Now, editing the `nginx.conf` for the routes is a breeze. We run the parsing script on the `nginx.conf` to find the current blue and green, and for
+
+- `/deployment/deployGreen`
+  - Stand up a docker container for green
+  - Render the template with `blue_env` as the current blue and `enable_test_route` as true
+- `/deployment/switchTraffic`
+  - Render the template with `blue_env` as the current green and `enable_test_route` as false
+  - Tear down the current blue docker container (which is now considered the old blue)
+- `/deployment/destroyGreen`
+  - Render the template with `blue_env` as the current blue and `enable_test_route` as false
+  - Tear down the current green docker container
+
+<br />
+All routes will end with a reload of the nginx server so it will start using the
+new `nginx.conf` file
+
+<br />
+The code is slightly more complicated than this -- I do a couple checks on the state
+of green to determine whether or not the route is valid to call (if green is up,
+deployGreen should fail. Likewise, the latter two routes should fail if green is
+down). But largely this is all there is to it.
+
+<br />
+Here’s what the template looks like:
+
+<img src="/blueGreen/nginxConfTemplate.png" />
+
+Now, editing the `nginx.conf` for the routes is a breeze. To do this, we:
+
+1. run the parsing script on the `nginx.conf` to determine the current blue and green environments
+2. apply the following logic for each route:
+   - `/deployment/deployGreen:`
+     - stand up a Docker container for green
+     - render the template with `blue_env` as the current blue and `enable_test_route` as true
+   - `/deployment/switchTraffic`
+     - render the template with `blue_env` as the current green and `enable_test_route` as false
+     - tear down the current blue docker container (which is now considered the old blue)
+   - `/deployment/destroyGreen`
+     - render the template with `blue_env` as the current blue and `enable_test_route` as false
+     - tear down the current green docker container
+3. reload the nginx server to apply the new `nginx.conf` configuration
+
+The code is slightly more complicated than this -- I do a couple checks on the state
+of green to determine whether or not the route is valid to call (if green is up,
+deployGreen should fail. Likewise, the latter two routes should fail if green is
+down).
+
+<br />
+But largely this is all there is to it.
+
+<a href="https://github.com/Bouzomgi/blueGreen" className="github-link">
+  ➞ Check out the code on Github
+</a>
