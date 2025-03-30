@@ -250,33 +250,6 @@ Here's what the template looks like:
 
 <img src="/blueGreen/nginxConfTemplate.png" />
 
-Now, editing the `nginx.conf` for the routes is a breeze. We run the parsing script on the `nginx.conf` to find the current blue and green, and for
-
-- `/deployment/deployGreen`
-  - Stand up a docker container for green
-  - Render the template with `blue_env` as the current blue and `enable_test_route` as true
-- `/deployment/switchTraffic`
-  - Render the template with `blue_env` as the current green and `enable_test_route` as false
-  - Tear down the current blue docker container (which is now considered the old blue)
-- `/deployment/destroyGreen`
-  - Render the template with `blue_env` as the current blue and `enable_test_route` as false
-  - Tear down the current green docker container
-
-<br />
-All routes will end with a reload of the nginx server so it will start using the
-new `nginx.conf` file
-
-<br />
-The code is slightly more complicated than this -- I do a couple checks on the state
-of green to determine whether or not the route is valid to call (if green is up,
-deployGreen should fail. Likewise, the latter two routes should fail if green is
-down). But largely this is all there is to it.
-
-<br />
-Here’s what the template looks like:
-
-<img src="/blueGreen/nginxConfTemplate.png" />
-
 Now, editing the `nginx.conf` for the routes is a breeze. To do this, we:
 
 1. run the parsing script on the `nginx.conf` to determine the current blue and green environments
