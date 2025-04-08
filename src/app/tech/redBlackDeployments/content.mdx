@@ -1,4 +1,4 @@
-# Blue Green Deployments
+# Red Black Deployments
 
 ## Problem Statement
 
@@ -10,30 +10,29 @@ the internet rather than setting up a VPN. Similarly, I want my regression tests
 to run over the internet to simulate real-world traffic as closely as possible.
 
 <br />
-In many blue-green deployment setups, the previous version (blue) is kept around
-in case a rollback is needed. To keep things simple, I plan to eliminate the old
-version as soon as traffic has been switched.
+I'd like to keep things simple, so I plan to eliminate the old version as soon as
+traffic has been switched.
 
 <br />
-How can I do something like this? Well, I can implement a custom [blue green deployment
-strategy](https://en.wikipedia.org/wiki/Blue%E2%80%93green_deployment).
+How can I do something like this? Well, I can implement a custom [red black deployment
+strategy](https://en.wikipedia.org/wiki/Red%E2%80%93black_deployment).
 
-## What is a Blue Green Deployment?
+## What is a Red Black Deployment?
 
-In this deployment strategy, there are always two environments: blue and green. The blue server serves as the production environment, handling all live traffic.
+In this deployment strategy, there are two environments: red and black. The red server serves as the production environment, handling all live traffic. Red is always running.
 
 <br />
-When deploying a new version, we spin up a separate green server. Once up, we can
+When deploying a new version, we spin up a separate black server. Once up, we can
 run whatever tests we'd like against this application to ensure it is stable and
 regression-free before exposing it to production traffic.
 
 <br />
-Once we're confident the green server is working properly, we switch production traffic
-to it. Green becomes the new blue, and the previous blue server is torn down.
+Once we're confident the black server is working properly, we switch production traffic
+to it. Black becomes the new red, and the previous red server is torn down.
 
-## Blue-Green and Me
+## Red-Black and Me
 
-I want to implement a blue-green deployment strategy tailored to my application's needs.
+I want to implement a red-black deployment strategy tailored to my application's needs.
 
 <br />
 In addition to my previous deployment needs, I have another limitation -- I don't
@@ -47,29 +46,29 @@ requests to other services running on my hardware.
 Here's how my CI/CD workflow will look:
 
 - publish a new version of my application to a Docker repository
-- trigger a new green environment using the new image
-- run regression tests against green
-  - if the tests pass, switch production traffic to green and remove the old blue
-  - if the tests fail, destroy green
+- trigger a new black environment using the new image
+- run regression tests against black
+  - if the tests pass, switch production traffic to black and remove the old red
+  - if the tests fail, destroy black
 
 ### Routes
 
 Since all communication (deployment, testing, and production traffic) will flow through a single port, there will need to be specialized routes to break up the traffic to their corresponding work streams:
 
 - `/deployment`
-  - `/deployment/deployGreen` → stands up a new green
-  - `/deployment/switchTraffic` → points production traffic to green and remove the old blue deployment
-  - `/deployment/deployGreen` → removes the current green
+  - `/deployment/deployBlack` → stands up a new black
+  - `/deployment/switchTraffic` → points production traffic to black and remove the old red deployment
+  - `/deployment/deployBlack` → removes the current black
 - `/test`
-  - routes all requests with this prefix to green
+  - routes all requests with this prefix to black
 - `/`
-  - routes all other requests to blue (production)
+  - routes all other requests to red (production)
 
 ## Architecture
 
 ### Containerization
 
-Since I want the flexibility to deploy my backend web server anywhere, containerization is the clear choice. In the context of blue-green deployments, running both blue and green as separate Docker containers ensures clean isolation between the two versions.
+Since I want the flexibility to deploy my backend web server anywhere, containerization is the clear choice. In the context of red-black deployments, running both red and black as separate Docker containers ensures clean isolation between the two versions.
 
 <br />
 And to keep things consistent, I also plan to containerize any additional services
@@ -78,7 +77,7 @@ file, making it easy to spin up the entire setup.
 
 ### A Traffic Controller
 
-With two isolated servers (blue and green) running simultaneously, and a single entry point for external traffic, we will need something of a "traffic controller" to route requests between the two servers.
+With two isolated servers (red and black) running simultaneously, and a single entry point for external traffic, we will need something of a "traffic controller" to route requests between the two servers.
 
 <br />
 Nginx fits this role well -- it is a powerful reverse proxy that can direct traffic
@@ -88,13 +87,13 @@ based on URL path, which aligns perfectly with our needs.
 Our architecture at this point will look something like this, where each box is a
 separate docker container:
 
-<img src="/blueGreen/architecture1.png" />
+<img src="/redBlack/architecture1.jpeg" />
 
 ### Wrangling Nginx
 
 There is an issue though. Nginx is configured using an `nginx.conf` file, which looks something like this:
 
-<img src="/blueGreen/nginxConf.png" />
+<img src="/redBlack/nginxConf.jpeg" />
 
 As you can see in this example config, a developer can program nginx to route traffic based on a specific path to a particular location.
 
@@ -102,8 +101,8 @@ As you can see in this example config, a developer can program nginx to route tr
 However, in this scenario, the routing (and thus the `nginx.conf` file) will need
 to change dynamically:
 
-- When we spin up a green environment, we want requests starting with `/test` to be routed to it. And when green goes down, this `/test` routing shouldn't happen anymore.
-- When we want to switch traffic, we need to point requests against `/` to the green backend server, which requires us to modify the proxy pass URL to green
+- When we spin up a black environment, we want requests starting with `/test` to be routed to it. And when black goes down, this `/test` routing shouldn't happen anymore.
+- When we want to switch traffic, we need to point requests against `/` to the black backend server, which requires us to modify the proxy pass URL to black
 
 <br />
 The problem is that Nginx doesn’t provide a built-in way to execute scripts directly
@@ -119,17 +118,17 @@ changes when switching environments or adjusting routes. I'll call this service 
 
 The deployment server will handle requests for the following endpoints:
 
-- `/deployment/deployGreen`
+- `/deployment/deployBlack`
 - `/deployment/switchTraffic`
-- `/deployment/destroyGreen`
+- `/deployment/destroyBlack`
 
 <br />
 When the deployment server receives these requests, it will take the necessary actions,
 such as:
 
 - Programmatically updating the `nginx.conf` file to route traffic appropriately.
-- Creating new containers for the green environment.
-- Removing containers for the old environment (blue or green, as necessary).
+- Creating new containers for the black environment.
+- Removing containers for the old environment (red or black, as necessary).
 
 This server acts as the control center for managing the lifecycle of our deployment, ensuring that the Nginx configuration stays in sync with the environment changes.
 
@@ -164,7 +163,7 @@ Instead, we can keep them as separate containers and connect them using a Docker
 <br />
 Now, our architecture is looking like this:
 
-<img src="/blueGreen/architecture2.png" />
+<img src="/redBlack/architecture2.jpeg" />
 
 ## Implementation
 
@@ -172,23 +171,23 @@ From here, we can begin building out the application. I've chosen to write my we
 
 ### Naming our Containers
 
-We can't actually name our containers blue or green in Docker. The issue is we can't rename the container once it is running, so to give our containers these names, we would need to tear both blue and green down at the same time, rename, and restart, which obviously would not permit for downtime-less deployment (the entire point of this blue green deployment strategy).
+We can't actually name our containers red or black in Docker. The issue is we can't rename the container once it is running, so to give our containers these names, we would need to tear both red and black down at the same time, rename, and restart, which obviously would not permit for downtime-less deployment (the entire point of this red black deployment strategy).
 
 <br />
 Instead, we can use the names "alpha" and "omega" for my backend containers. Alpha
-or omega can represent either blue or green -- the way we can know which is blue
-and which is green is by checking where production traffic is routed. If production
-traffic is going to alpha, alpha is blue. Likewise for omega. And green of course
-will be the opposite container.
+or omega can represent either red or black -- the way we can know which is red and
+which is black is by checking where production traffic is routed. If production traffic
+is going to alpha, alpha is red. Likewise for omega. And black of course will be
+the opposite container.
 
-## What's our Blue?
+## What's our Red?
 
-How do we programmatically "remember" which environment the traffic controller currently considers blue?
+How do we programmatically "remember" which environment the traffic controller currently considers red?
 
 <br />
 At first, I considered using an environment variable named `BLUE_ENV`, setting its
 value to either ALPHA or OMEGA, and injecting it somehow into the `nginx.conf`. This
-would make it easy to reference the current blue container name throughout the application.
+would make it easy to reference the current red container name throughout the application.
 
 <br />
 However, this approach felt a bit messy. I was concerned that:
@@ -197,35 +196,34 @@ However, this approach felt a bit messy. I was concerned that:
 - the env var would be wiped if the container restarted
 - there would be no clear single source of truth
 
-Instead, I scrapped the env var approach and decided to treat the `nginx.conf` as the single source of truth. I can simply parse the `nginx.conf` to determine which container is currently blue.
+Instead, I scrapped the env var approach and decided to treat the `nginx.conf` as the single source of truth. I can simply parse the `nginx.conf` to determine which container is currently red.
 
 <br />
-To make this easier, I added a #blue comment next to the blue environment block in
-the `nginx.conf`, allowing my parsing script to quickly identify the active blue
-server.
+To make this easier, I added a #red comment next to the red environment block in
+the `nginx.conf`, allowing my parsing script to quickly identify the active red server.
 
-<img src="/blueGreen/nginxConfBlue.png" />
+<img src="/redBlack/nginxConfRed.jpeg" />
 
 ### Writing the Routes
 
-How will we implement our routes? Let’s start with `/deployment/deployGreen`.
+How will we implement our routes? Let’s start with `/deployment/deployBlack`.
 
 <br />
-If blue is currently pointing to alpha, we’ll need to stand up omega as green and
+If red is currently pointing to alpha, we’ll need to stand up omega as black and
 add a block in the `nginx.conf` that routes `/test` traffic to omega.
 
 <br />
 We need to create an `nginx.conf` that looks something like this:
 
-<img src="/blueGreen/nginxConfTestRoute.png" />
+<img src="/redBlack/nginxConfTestRoute.jpeg" />
 
 Now, how do we edit the `nginx.conf`? One option is to
 
-- parse for the current blue
-- use it to determine the green (if blue is alpha, green is omega, and vice versa)
+- parse for the current red
+- use it to determine the black (if red is alpha, black is omega, and vice versa)
 - and use something like sed to
   - find the `location /` block
-  - insert in a `location /test` block right, pointing to the green environment
+  - insert in a `location /test` block right, pointing to the black environment
 
 But I don’t like this approach.
 
@@ -240,39 +238,39 @@ Instead, I opted for a template-based approach to generate the `nginx.conf`.
 <br />
 Using Jinja2 and Ansible, I created a template that accepts two arguments:
 
-1. the current blue environment (alpha or omega)
-2. whether or not to enable the `/test` route for green
+1. the current red environment (alpha or omega)
+2. whether or not to enable the `/test` route for black
 
 I can then generates a new `nginx.conf`, ensuring a consistent and predictable format every time.
 
 <br />
 Here's what the template looks like:
 
-<img src="/blueGreen/nginxConfTemplate.png" />
+<img src="/redBlack/nginxConfTemplate.jpeg" />
 
 Now, editing the `nginx.conf` for the routes is a breeze. To do this, we:
 
-1. run the parsing script on the `nginx.conf` to determine the current blue and green environments
+1. run the parsing script on the `nginx.conf` to determine the current red and black environments
 2. apply the following logic for each route:
-   - `/deployment/deployGreen:`
-     - stand up a Docker container for green
-     - render the template with `blue_env` as the current blue and `enable_test_route` as true
+   - `/deployment/deployBlack:`
+     - stand up a Docker container for black
+     - render the template with `red_env` as the current red and `enable_test_route` as true
    - `/deployment/switchTraffic`
-     - render the template with `blue_env` as the current green and `enable_test_route` as false
-     - tear down the current blue docker container (which is now considered the old blue)
-   - `/deployment/destroyGreen`
-     - render the template with `blue_env` as the current blue and `enable_test_route` as false
-     - tear down the current green docker container
+     - render the template with `red_env` as the current black and `enable_test_route` as false
+     - tear down the current red docker container (which is now considered the old red)
+   - `/deployment/destroyBlack`
+     - render the template with `red_env` as the current red and `enable_test_route` as false
+     - tear down the current black docker container
 3. reload the nginx server to apply the new `nginx.conf` configuration
 
 The code is slightly more complicated than this -- I do a couple checks on the state
-of green to determine whether or not the route is valid to call (if green is up,
-deployGreen should fail. Likewise, the latter two routes should fail if green is
+of black to determine whether or not the route is valid to call (if black is up,
+deployBlack should fail. Likewise, the latter two routes should fail if black is
 down).
 
 <br />
 But largely this is all there is to it.
 
-<a href="https://github.com/Bouzomgi/blueGreen" className="github-link">
+<a href="https://github.com/Bouzomgi/redBlack" className="github-link">
   ➞ Check out the code on Github
 </a>
