@@ -4,23 +4,13 @@
 
 An SSL certificate can either be self-signed or signed by a certificate authority. Modern browsers will only trust a site that provides an authority signed certificate.
 
-<br />A user can get an authority signed certificate for their domain if the
-user proves to the authority that it owns the domain name (ex: via ability to
-manipulate the domain’s DNS records).
+<br />A user can get an authority signed certificate for their domain if the user proves to the authority that it owns the domain name (ex: via ability to manipulate the domain’s DNS records).
 
 <br />
-This is done to establish some sort of security — they prove to the browser that
-the site the browser is visiting is actually controlled by the legitimate owner of
-the domain.
+This is done to establish some sort of security — they prove to the browser that the site the browser is visiting is actually controlled by the legitimate owner of the domain.
 
 <br />
-But how does this proof of ownership actually increase security? Isn’t implied that
-the owner of a domain owns the website it points to? After all, you have to own the
-domain name to point it to a particular server.
+But how does this proof of ownership actually increase security? Isn’t implied that the owner of a domain owns the website it points to? After all, you have to own the domain name to point it to a particular server.
 
 <br />
-Well, not if IP redirection occurs. Especially at the local network level, domain
-names can be redirected to point to particular servers that do not correspond with
-the domain’s intended IP value. In this case, the browser will reject this spoofed
-site as it cannot present an authority signed certificate for the domain it is spoofed
-on.
+Well, not if IP redirection occurs. Especially at the local network level, domain names can be redirected to point to particular servers that do not correspond with the domain’s intended IP value. In this case, the browser will reject this spoofed site as it cannot present an authority signed certificate for the domain it is spoofed on.

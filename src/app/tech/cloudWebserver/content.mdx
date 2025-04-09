@@ -3,9 +3,7 @@
 I would like to set up a web server that is accessible through the internet. I will use EC2 to host this webserver.
 
 <br />
-One way to do this is to create a VPC with a public subnet, and create an EC2 instance
-within it. However, this is less secure than keeping the EC2 instance in a private
-subnet. This seems like a simple tweak, but it actually generates a bit of complexity.
+One way to do this is to create a VPC with a public subnet, and create an EC2 instance within it. However, this is less secure than keeping the EC2 instance in a private subnet. This seems like a simple tweak, but it actually generates a bit of complexity.
 
 <br />I will step you though how to accomplish it.
 
@@ -17,15 +15,10 @@ Let's first discuss what we will need. To be able to access this EC2 instance ov
 To do this, I will use an application load balancer (ALB).
 
 <br />
-An ALB must exist over at least two availability zones (AZs), so it must sit over
-two public subnets (one per AZ). It must also target at least two resources. This
-means we need at least two web servers. Since we need two EC2 instances anyways to
-host these web servers, we might as well put them in separate private subnets (similarly,
-in different AZs).
+An ALB must exist over at least two availability zones (AZs), so it must sit over two public subnets (one per AZ). It must also target at least two resources. This means we need at least two web servers. Since we need two EC2 instances anyways to host these web servers, we might as well put them in separate private subnets (similarly, in different AZs).
 
 <br />
-We want to run web servers on these EC2 instances. To do this, we will need a way
-to get access to these EC2 instances to
+We want to run web servers on these EC2 instances. To do this, we will need a way to get access to these EC2 instances to
 
 - store an html file,
 - install some code that will run a web server,
@@ -34,10 +27,7 @@ to get access to these EC2 instances to
 The easiest way I could find to do this is a "bastion" EC2 instance. This guy will sit in one of the public subnets so we can ssh into it. Then, once inside, we will be able to ssh into the EC2 instances in the private subnets.
 
 <br />
-Remember how we said we will need to install code to run that web server? This means
-the EC2 instances in the private subnets will need to be able to access the internet.
-This means we will also need a NAT gateway to enable outbound internet access from
-these private subnets.
+Remember how we said we will need to install code to run that web server? This means the EC2 instances in the private subnets will need to be able to access the internet. This means we will also need a NAT gateway to enable outbound internet access from these private subnets.
 
 <br />
 SO, the architecture will look like this:
@@ -63,10 +53,7 @@ Let's get started!
 Create a VPC with 2 AZs, 2 public subnets, 2 private subnets and 1 NAT gateway
 
 <br />
-You need to point your private subnets to this NAT gateway. Go to the Route Table
-used by your private subnets and click "actions" -> "edit routes". Now add a route
-with destination "0.0.0.0/0" and target as "Nat Gateway". Make sure you fill in the
-name of your provisioned NAT gateway in the textbox below. Save your changes.
+You need to point your private subnets to this NAT gateway. Go to the Route Table used by your private subnets and click "actions" -> "edit routes". Now add a route with destination "0.0.0.0/0" and target as "Nat Gateway". Make sure you fill in the name of your provisioned NAT gateway in the textbox below. Save your changes.
 
 ### EC2 Instances
 
@@ -85,11 +72,7 @@ Create a key pair and assign the same one to all three.
 Make sure you are putting the EC2 instance in the right VPC and subnet. If this EC2 instance is the public one, make sure to toggle on "auto-assign public IP".
 
 <br />
-We will want to create a new security group (sg) that we will use for all three of
-our instances -- when creating this sg, in addition to the default ssh rule we will
-want to add another rule for `custom TCP` on port `8080` with source `0.0.0.0/0`.
-In your second two EC2 instances, make sure you click "select existing security group"
-and select it from the list
+We will want to create a new security group (sg) that we will use for all three of our instances -- when creating this sg, in addition to the default ssh rule we will want to add another rule for `custom TCP` on port `8080` with source `0.0.0.0/0`. In your second two EC2 instances, make sure you click "select existing security group" and select it from the list
 
 <br />
 Go ahead and launch your instance. Create 2 more for your other two EC2 instances.
@@ -99,9 +82,7 @@ Go ahead and launch your instance. Create 2 more for your other two EC2 instance
 In preparation for our ALB, we will create a target group this ALB will hook on to that points to our web server EC2 instances. Select "instances", give it a name, set the port as `http` on port `8080`, and select your VPC. Hit next.
 
 <br />
-Select your web server EC2 instances, change the "ports for the selected instances"
-port to `8080`, and click "include as pending below". Then go ahead and create your
-target group.
+Select your web server EC2 instances, change the "ports for the selected instances" port to `8080`, and click "include as pending below". Then go ahead and create your target group.
 
 ### Application Load Balancer
 
@@ -160,8 +141,7 @@ ssh -A ec2-user@{private-ip-address}
 You should now be in your bastion EC2 instance. Go ahead and follow the same instructions given above to get into a web server EC2 instance (using that EC2 instance's private IP address).
 
 <br />
-Once inside, make sure you can hit the outside internet with a quick `curl www.google.com`.
-If you get output, go ahead and run the following:
+Once inside, make sure you can hit the outside internet with a quick `curl www.google.com`. If you get output, go ahead and run the following:
 
 ```bash
 sudo yum install nodejs npm -y
@@ -219,7 +199,4 @@ Go to your ALB in AWS and grab its DNS name. You can go ahead and paste it into 
 
 If you want to regularly publish code on your EC2 instances, you might wanna use something like AWS CodeDeploy. You might think that using CodeDeploy might be doable w/o going thru these steps, but you would be mistaken -- AWS hates you and as well as anything simple and wants you to suffer. You will need to install a CodeDeploy agent on your EC2 instances, so at minimum the bastion instance is necessary. Once you have CodeDeploy on the EC2 instances and deployments seem to work, you can tear down the bastion and probably the NAT gateway as well.
 
-<br />I read that you can also use AWS SM to ssh into EC2 instances in private subnets,
-but I couldn't figure out how to get it to work. And, because Amazon hates everyone,
-the link on AWS to their internal documentation describing how to get SM FleetManager
-to work on EC2 instances is dead. Epic.
+<br />I read that you can also use AWS SM to ssh into EC2 instances in private subnets, but I couldn't figure out how to get it to work. And, because Amazon hates everyone, the link on AWS to their internal documentation describing how to get SM FleetManager to work on EC2 instances is dead. Epic.

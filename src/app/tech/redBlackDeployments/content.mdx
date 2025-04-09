@@ -5,42 +5,30 @@
 I have a web server deployed on hardware I own. I want to replace it with a new version at will, without downtime. Before making the switch, I need to validate that the new version runs correctly on my hardware and doesn't introduce regressions.
 
 <br />
-My CI/CD pipeline runs on a remote server, and I want to trigger deployments over
-the internet rather than setting up a VPN. Similarly, I want my regression tests
-to run over the internet to simulate real-world traffic as closely as possible.
+My CI/CD pipeline runs on a remote server, and I want to trigger deployments over the internet rather than setting up a VPN. Similarly, I want my regression tests to run over the internet to simulate real-world traffic as closely as possible.
 
 <br />
-I'd like to keep things simple, so I plan to eliminate the old version as soon as
-traffic has been switched.
+I'd like to keep things simple, so I plan to eliminate the old version as soon as traffic has been switched.
 
 <br />
-How can I do something like this? Well, I can implement a custom red black deployment
-strategy.
+How can I do something like this? Well, I can implement a custom red black deployment strategy.
 
 ## What is a Red Black Deployment?
 
 In this deployment strategy, there are two environments: red and black. The red server serves as the production environment, handling all live traffic. Red is always running.
 
 <br />
-When deploying a new version, we spin up a separate black server. Once up, we can
-run whatever tests we'd like against this application to ensure it is stable and
-regression-free before exposing it to production traffic.
+When deploying a new version, we spin up a separate black server. Once up, we can run whatever tests we'd like against this application to ensure it is stable and regression-free before exposing it to production traffic.
 
 <br />
-Once we're confident the black server is working properly, we switch production traffic
-to it. Black becomes the new red, and the previous red server is torn down.
+Once we're confident the black server is working properly, we switch production traffic to it. Black becomes the new red, and the previous red server is torn down.
 
 ## Red-Black and Me
 
 I want to implement a red-black deployment strategy tailored to my application's needs.
 
 <br />
-In addition to my previous deployment needs, I have another limitation -- I don't
-want to open port 22 to the internet on the hardware running my servers for security
-reasons. To keep things simple, I prefer all communication (deployment, testing,
-and production traffic) to happen over a single port, most likely 80/443. This means
-I need a single entry point that can either handle all the deployment logic or route
-requests to other services running on my hardware.
+In addition to my previous deployment needs, I have another limitation -- I don't want to open port 22 to the internet on the hardware running my servers for security reasons. To keep things simple, I prefer all communication (deployment, testing, and production traffic) to happen over a single port, most likely 80/443. This means I need a single entry point that can either handle all the deployment logic or route requests to other services running on my hardware.
 
 <br />
 Here's how my CI/CD workflow will look:
@@ -71,21 +59,17 @@ Since all communication (deployment, testing, and production traffic) will flow 
 Since I want the flexibility to deploy my backend web server anywhere, containerization is the clear choice. In the context of red-black deployments, running both red and black as separate Docker containers ensures clean isolation between the two versions.
 
 <br />
-And to keep things consistent, I also plan to containerize any additional services
-needed for my deployment strategy. Everything will be managed with a simple docker-compose
-file, making it easy to spin up the entire setup.
+And to keep things consistent, I also plan to containerize any additional services needed for my deployment strategy. Everything will be managed with a simple docker-compose file, making it easy to spin up the entire setup.
 
 ### A Traffic Controller
 
 With two isolated servers (red and black) running simultaneously, and a single entry point for external traffic, we will need something of a "traffic controller" to route requests between the two servers.
 
 <br />
-Nginx fits this role well -- it is a powerful reverse proxy that can direct traffic
-based on URL path, which aligns perfectly with our needs.
+Nginx fits this role well -- it is a powerful reverse proxy that can direct traffic based on URL path, which aligns perfectly with our needs.
 
 <br />
-Our architecture at this point will look something like this, where each box is a
-separate docker container:
+Our architecture at this point will look something like this, where each box is a separate docker container:
 
 <img src="/redBlack/architecture1.jpeg" />
 
@@ -98,21 +82,16 @@ There is an issue though. Nginx is configured using an `nginx.conf` file, which 
 As you can see in this example config, a developer can program nginx to route traffic based on a specific path to a particular location.
 
 <br />
-However, in this scenario, the routing (and thus the `nginx.conf` file) will need
-to change dynamically:
+However, in this scenario, the routing (and thus the `nginx.conf` file) will need to change dynamically:
 
 - When we spin up a black environment, we want requests starting with `/test` to be routed to it. And when black goes down, this `/test` routing shouldn't happen anymore.
 - When we want to switch traffic, we need to point requests against `/` to the black backend server, which requires us to modify the proxy pass URL to black
 
 <br />
-The problem is that Nginx doesn’t provide a built-in way to execute scripts directly
-to modify the `nginx.conf` file. So, how do we handle this?
+The problem is that Nginx doesn’t provide a built-in way to execute scripts directly to modify the `nginx.conf` file. So, how do we handle this?
 
 <br />
-What we can do is create and spin up a separate server that can take care of dynamically
-modifying the `nginx.conf` file as needed. This server will handle all the necessary
-changes when switching environments or adjusting routes. I'll call this service our
-"deployment server".
+What we can do is create and spin up a separate server that can take care of dynamically modifying the `nginx.conf` file as needed. This server will handle all the necessary changes when switching environments or adjusting routes. I'll call this service our "deployment server".
 
 ### Deployment Server
 
@@ -123,8 +102,7 @@ The deployment server will handle requests for the following endpoints:
 - `/deployment/destroyBlack`
 
 <br />
-When the deployment server receives these requests, it will take the necessary actions,
-such as:
+When the deployment server receives these requests, it will take the necessary actions, such as:
 
 - Programmatically updating the `nginx.conf` file to route traffic appropriately.
 - Creating new containers for the black environment.
@@ -137,22 +115,13 @@ This server acts as the control center for managing the lifecycle of our deploym
 Where should I run this deployment server? Remember, both the nginx traffic controller and the deployment server need to be able to edit the `nginx.conf` file.
 
 <br />
-So, the simplest approach is to just keep them in the same container. That way, they
-both have immediate access to the configuration file. We can use a tool like Supervisor
-to manage both the Nginx server and the deployment server, running them on different
-ports.
+So, the simplest approach is to just keep them in the same container. That way, they both have immediate access to the configuration file. We can use a tool like Supervisor to manage both the Nginx server and the deployment server, running them on different ports.
 
 <br />
-However, this approach introduces a challenge: Nginx, by default, runs as a user
-with minimal privileges to enhance security. This is important, as Nginx is the entry
-point to the application and could be a target for attacks. Running both services
-in the same container would require granting the web server additional permissions
-to read, write, and execute files, which compromises Nginx’s default security model.
+However, this approach introduces a challenge: Nginx, by default, runs as a user with minimal privileges to enhance security. This is important, as Nginx is the entry point to the application and could be a target for attacks. Running both services in the same container would require granting the web server additional permissions to read, write, and execute files, which compromises Nginx’s default security model.
 
 <br />
-The webserver itself will need additional access to read, write, and execute files.
-So, to run both servers on the same container, we would need to grant expanded permissions
-to that container.
+The webserver itself will need additional access to read, write, and execute files. So, to run both servers on the same container, we would need to grant expanded permissions to that container.
 
 <br />I don't wanna do this.
 
@@ -174,20 +143,14 @@ From here, we can begin building out the application. I've chosen to write my we
 We can't actually name our containers red or black in Docker. The issue is we can't rename the container once it is running, so to give our containers these names, we would need to tear both red and black down at the same time, rename, and restart, which obviously would not permit for downtime-less deployment (the entire point of this red black deployment strategy).
 
 <br />
-Instead, we can use the names "alpha" and "omega" for my backend containers. Alpha
-or omega can represent either red or black -- the way we can know which is red and
-which is black is by checking where production traffic is routed. If production traffic
-is going to alpha, alpha is red. Likewise for omega. And black of course will be
-the opposite container.
+Instead, we can use the names "alpha" and "omega" for my backend containers. Alpha or omega can represent either red or black -- the way we can know which is red and which is black is by checking where production traffic is routed. If production traffic is going to alpha, alpha is red. Likewise for omega. And black of course will be the opposite container.
 
 ## What's our Red?
 
 How do we programmatically "remember" which environment the traffic controller currently considers red?
 
 <br />
-At first, I considered using an environment variable named `BLUE_ENV`, setting its
-value to either ALPHA or OMEGA, and injecting it somehow into the `nginx.conf`. This
-would make it easy to reference the current red container name throughout the application.
+At first, I considered using an environment variable named `BLUE_ENV`, setting its value to either ALPHA or OMEGA, and injecting it somehow into the `nginx.conf`. This would make it easy to reference the current red container name throughout the application.
 
 <br />
 However, this approach felt a bit messy. I was concerned that:
@@ -199,8 +162,7 @@ However, this approach felt a bit messy. I was concerned that:
 Instead, I scrapped the env var approach and decided to treat the `nginx.conf` as the single source of truth. I can simply parse the `nginx.conf` to determine which container is currently red.
 
 <br />
-To make this easier, I added a #red comment next to the red environment block in
-the `nginx.conf`, allowing my parsing script to quickly identify the active red server.
+To make this easier, I added a #red comment next to the red environment block in the `nginx.conf`, allowing my parsing script to quickly identify the active red server.
 
 <img src="/redBlack/nginxConfRed.jpeg" />
 
@@ -209,8 +171,7 @@ the `nginx.conf`, allowing my parsing script to quickly identify the active red 
 How will we implement our routes? Let’s start with `/deployment/deployBlack`.
 
 <br />
-If red is currently pointing to alpha, we’ll need to stand up omega as black and
-add a block in the `nginx.conf` that routes `/test` traffic to omega.
+If red is currently pointing to alpha, we’ll need to stand up omega as black and add a block in the `nginx.conf` that routes `/test` traffic to omega.
 
 <br />
 We need to create an `nginx.conf` that looks something like this:
@@ -228,9 +189,7 @@ Now, how do we edit the `nginx.conf`? One option is to
 But I don’t like this approach.
 
 <br />
-Relying on sed for direct manipulation makes the configuration scripts tightly coupled
-to the `nginx.conf` structure. If we later modify the config format, we’d need to
-rewrite the scripts, which could lead to a lot of headache.
+Relying on sed for direct manipulation makes the configuration scripts tightly coupled to the `nginx.conf` structure. If we later modify the config format, we’d need to rewrite the scripts, which could lead to a lot of headache.
 
 <br />
 Instead, I opted for a template-based approach to generate the `nginx.conf`.
@@ -263,10 +222,7 @@ Now, editing the `nginx.conf` for the routes is a breeze. To do this, we:
      - tear down the current black docker container
 3. reload the nginx server to apply the new `nginx.conf` configuration
 
-The code is slightly more complicated than this -- I do a couple checks on the state
-of black to determine whether or not the route is valid to call (if black is up,
-deployBlack should fail. Likewise, the latter two routes should fail if black is
-down).
+The code is slightly more complicated than this -- I do a couple checks on the state of black to determine whether or not the route is valid to call (if black is up, deployBlack should fail. Likewise, the latter two routes should fail if black is down).
 
 <br />
 But largely this is all there is to it.
