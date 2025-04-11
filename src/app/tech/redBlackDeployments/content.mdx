@@ -69,7 +69,7 @@ With two isolated servers (red and black) running simultaneously, and a single e
 Nginx fits this role well -- it is a powerful reverse proxy that can direct traffic based on URL path, which aligns perfectly with our needs.
 
 <br />
-Our architecture at this point will look something like this, where each box is a separate docker container:
+Our architecture at this point will look something like this, where each box is a separate Docker container:
 
 <img src="/redBlack/architecture1.jpeg" />
 
@@ -216,10 +216,10 @@ Now, editing the `nginx.conf` for the routes is a breeze. To do this, we:
      - render the template with `red_env` as the current red and `enable_test_route` as true
    - `/deployment/switchTraffic`
      - render the template with `red_env` as the current black and `enable_test_route` as false
-     - tear down the current red docker container (which is now considered the old red)
+     - tear down the current red Docker container (which is now considered the old red)
    - `/deployment/destroyBlack`
      - render the template with `red_env` as the current red and `enable_test_route` as false
-     - tear down the current black docker container
+     - tear down the current black Docker container
 3. reload the nginx server to apply the new `nginx.conf` configuration
 
 The code is slightly more complicated than this -- I do a couple checks on the state of black to determine whether or not the route is valid to call (if black is up, deployBlack should fail. Likewise, the latter two routes should fail if black is down).
