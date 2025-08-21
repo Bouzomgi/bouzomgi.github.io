@@ -56,6 +56,13 @@ a {
   word-wrap: break-word;
 }
 
+blockquote {
+  border-left: 2px solid #ccc; /* vertical line */
+  padding-left: 1rem; /* space between line and text */
+  margin: 1rem 0; /* vertical spacing */
+  font-style: italic; /* optional italics */
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
