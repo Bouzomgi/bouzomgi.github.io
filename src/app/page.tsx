@@ -8,7 +8,7 @@ export default function Home() {
         <a href="/words">words</a>
         <a href="/service">service</a>
         <a href="/tech">tech</a>
-        <a>etc</a>
+        <a href="/etc">etc</a>
         {/* travel, links */}
       </div>
     </div>
